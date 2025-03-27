@@ -8,7 +8,7 @@ cd "${SCRIPT_DIR}"
 
 # Mongo versions
 IMAGE_VERSIONS=(
-  "7.0.6"
+  "8.0.6"
 )
 
 # Read in current version of the script
