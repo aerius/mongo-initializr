@@ -16,6 +16,7 @@ MONGO_HOST="${DEFAULT_MONGO_HOST}"
 MONGO_PORT="${DEFAULT_MONGO_PORT}"
 MONGO_USER=""
 MONGO_PASS=""
+MONGO_IMPORT_NUM_INSERTION_WORKERS=1
 DATABASE_NAME=""
 DATABASE_VERSION=""
 
@@ -51,6 +52,8 @@ display_help() {
     _log
     _log "      --database-name [arg]     Specify database name"
     _log "      --database-version [arg]  Specify database version"
+    _log
+    _log "      --insertion-workers [arg] Specify amount of insertion workers to use (default: ${MONGO_IMPORT_NUM_INSERTION_WORKERS})"
     _log
     _log "  -h, --help                    Display this help message"
     exit 1
@@ -91,6 +94,10 @@ parse_arguments() {
                 ;;
             --database-version)
                 DATABASE_VERSION="$2"
+                shift 2
+                ;;
+            --insertion-workers)
+                MONGO_IMPORT_NUM_INSERTION_WORKERS="$2"
                 shift 2
                 ;;
             -h|--help)
@@ -147,7 +154,7 @@ add_json_to_collection() {
     # Check if the JSON filename exists
     if [[ -f "${filename}" ]]; then
         # Add JSON data to the collection. Use mongoimport to create the collection and add data
-        _mongoimport --collection ${collection} --file $filename --jsonArray --upsert --upsertFields "_id"
+        _mongoimport --numInsertionWorkers "${MONGO_IMPORT_NUM_INSERTION_WORKERS}" --collection ${collection} --file $filename --jsonArray --upsert --upsertFields "_id"
 
         _log "'${filename}' is added to '${collection}'"
     else

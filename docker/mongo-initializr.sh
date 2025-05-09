@@ -50,7 +50,8 @@ import_dbdata() {
     --mongo-username "${MONGO_INITDB_ROOT_USERNAME}" \
     --mongo-password "${MONGO_INITDB_ROOT_PASSWORD}" \
     --database-name "${MONGO_INITDB_DATABASE}" \
-    --database-version "${MI_DATABASE_VERSION}"
+    --database-version "${MI_DATABASE_VERSION}" \
+    --insertion-workers "${MI_IMPORT_INSERTION_WORKERS}"
 }
 
 run_script_runner() {
