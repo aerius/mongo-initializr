@@ -20,7 +20,8 @@ ARG MONGO_INITDB_DATABASE=${MONGO_INITDB_DATABASE:-mongo} \
     MI_BIN_FOLDER_CLEANUP=${MI_BIN_FOLDER_CLEANUP:-false} \
     MI_SOURCE_FOLDER_CLEANUP=${MI_SOURCE_FOLDER_CLEANUP:-false} \
     MI_DBDATA_FOLDER_CLEANUP=${MI_DBDATA_FOLDER_CLEANUP:-false} \
-    MI_SKIP_UNSET_ENVS=${MI_SKIP_UNSET_ENVS:-false}
+    MI_SKIP_UNSET_ENVS=${MI_SKIP_UNSET_ENVS:-false} \
+    MI_ENTRYPOINT_WIPE_DB_ON_CHANGES=${MI_ENTRYPOINT_WIPE_DB_ON_CHANGES:-false}
 
 ENV MONGO_INITDB_DATABASE=${MONGO_INITDB_DATABASE} \
     MONGO_INITDB_ROOT_USERNAME=${MONGO_INITDB_ROOT_USERNAME} \
@@ -40,7 +41,8 @@ ENV MONGO_INITDB_DATABASE=${MONGO_INITDB_DATABASE} \
     MI_BIN_FOLDER_CLEANUP=${MI_BIN_FOLDER_CLEANUP} \
     MI_SOURCE_FOLDER_CLEANUP=${MI_SOURCE_FOLDER_CLEANUP} \
     MI_DBDATA_FOLDER_CLEANUP=${MI_DBDATA_FOLDER_CLEANUP} \
-    MI_SKIP_UNSET_ENVS=${MI_SKIP_UNSET_ENVS}
+    MI_SKIP_UNSET_ENVS=${MI_SKIP_UNSET_ENVS} \
+    MI_ENTRYPOINT_WIPE_DB_ON_CHANGES=${MI_ENTRYPOINT_WIPE_DB_ON_CHANGES}
 
 # Install required packages
 RUN apt-get update \
@@ -53,3 +55,8 @@ RUN apt-get update \
 # Copy all necessary scripts
 COPY docker/mongo-initializr.sh /docker-entrypoint-initdb.d/
 COPY bin/ "${MI_BIN_FOLDER}"
+COPY docker/docker-mi-entrypoint.sh /usr/local/bin/
+
+# Set up our own entrypoint (CMD gets reset for security reasons, so let's add that as well)
+ENTRYPOINT ["docker-mi-entrypoint.sh"]
+CMD ["mongod"]
