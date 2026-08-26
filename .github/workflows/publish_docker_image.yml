@@ -2,11 +2,15 @@ name: Publish Docker image
 
 on:
   push:
+    branches:
+      - 'main'
+      - '**_fixes'
   release:
     types: [published]
 
 jobs:
   publish:
+    if: github.repository == 'aerius/mongo-initializr'
     runs-on: ubuntu-latest
 
     steps:
